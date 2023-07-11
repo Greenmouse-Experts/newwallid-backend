@@ -23,7 +23,7 @@ class Controller extends BaseController
         ];
         if($code < 400) $responseBody['data'] = $data;
         if($code >= 400 ) $responseBody['errors'] = $errors;
-        
+
         return response()->json($responseBody, $code);
     }
 
@@ -99,6 +99,7 @@ class Controller extends BaseController
         ]);
 
         $response = app()->handle($request);
+
         return json_decode($response->getContent());
     }
 

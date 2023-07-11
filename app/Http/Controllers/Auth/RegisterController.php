@@ -137,28 +137,21 @@ class RegisterController extends Controller
 
             $input = $request->validated();
             $user = $this->create($input);
-            
-            // $user = User::create([
-            //     'firstname' => $input['firstname'],
-            //     'lastname' => $input['lastname'],
-            //     'username' => $input['username'],
-            //     'phone' => $input['phone'],
-            //     'email' => $input['email'],
-            //     'password' => Hash::make($input['password'])
-            // ]);
 
             $individual = Individual::create([
                 'firstname' => $input['firstname'],
                 'lastname' => $input['lastname'],
                 'phone' => $input['phone'],
-                // 'id_card_number' => $this->idCardNumber($request->name),
                 'id_card_number' => $this->wallID(10),
                 'user_id' => $user->id
             ]);
 
             $this->assignRoles($user, 'individual');
 
-            $user->notify(new EmailVerificationNotification($user));
+            try {
+                $user->notify(new EmailVerificationNotification($user));
+            } catch(\Exception $e) {}
+
 
             $response = [
                 'status' => true,
@@ -199,7 +192,7 @@ class RegisterController extends Controller
             $random_character = $input[mt_rand(0, $input_length - 1)];
             $random_string .= $random_character;
         }
-    
+
         return $random_string;
     }
 
@@ -218,12 +211,11 @@ class RegisterController extends Controller
             ]);
 
             $org = Organization::create([
-                'name' => $request->input('name'),
+                'name' => $request->input('company'),
                 'user_id' => $user->id,
                 'phone' => $request->phone,
-                // 'id_card_number' => $this->idCardNumber($request->name),
                 'id_card_number' => $this->wallID(10),
-                'type' => $request->type
+                'type' => $request->type // 0 => Free , 0 => Closed
             ]);
 
             $this->assignRoles($user, 'organization');
@@ -281,15 +273,6 @@ class RegisterController extends Controller
 
         $user->notify(new EmailVerificationNotification($user));
 
-        // try {
-        //     $this->sendEmailVerificationNotification($user);
-        // } catch (\Exception $e) {
-        // }
-
-        // return response()->json(
-        //    [ 'data'=> $org,]
-        // );
-
         return redirect('login')
             ->with("success", "We just sent you a verification email. Please, check your email inbox.");
     }
@@ -327,8 +310,14 @@ class RegisterController extends Controller
 
     public function resend($email)
     {
-        $user = User::where('email', $email)->first();
+        $user = User::where('email', $email)
+                    ->where('status', '<>', 'active')->first();
 
+        if (!$user) {
+            return response([
+                'message' => 'Invalid user specified.'
+            ], 400);
+        }
         $user->notify(new EmailVerificationNotification($user));
 
         $response = [
@@ -373,7 +362,7 @@ class RegisterController extends Controller
     public function reset_password(Request $request)
     {
         $request->validate([
-            'code' => 'required|string|exists:reset_code_passwords',
+            'code' => 'required|string', //|exists:reset_code_passwords',
             'password' => 'required|string|min:6|confirmed',
         ]);
 
@@ -391,7 +380,7 @@ class RegisterController extends Controller
                 ]);
             }
 
-            // find user's email 
+            // find user's email
             $user = User::firstWhere('email', $passwordReset->email);
 
             // update user password
@@ -399,7 +388,7 @@ class RegisterController extends Controller
                 'password' => Hash::make($request->password)
             ]);
 
-            // delete current code 
+            // delete current code
             $passwordReset->delete();
 
             return response()->json([
@@ -410,7 +399,7 @@ class RegisterController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Code does\'nt exist in our database'
-            ]); 
+            ]);
         }
     }
 }

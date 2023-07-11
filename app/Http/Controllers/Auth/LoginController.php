@@ -17,6 +17,8 @@ use App\Http\Resources\AdminResource;
 use App\Http\Resources\UserResource;
 use App\Notifications\EmailVerificationNotification;
 
+
+
 class LoginController extends Controller
 {
     /*
@@ -88,8 +90,10 @@ class LoginController extends Controller
             return $this->sendCodedResponse(401, 'Email has not been verified', null, false);
         }
 
-        $token = $this->createAuthToken($request->email, $request->password);
-        return response([
+        // $token = $this->createAuthToken($request->email, $request->password);
+        $token = auth('api')->attempt(['email' => $request->email, 'password' => $request->password]);
+
+        return response()->json([
             'status' => true,
             'message' => 'Login Successfully',
             'data' => [

@@ -47,7 +47,7 @@ class HomeController extends Controller
             'status' => false,
             'message' => 'Subscription for this organization is empty',
         ]);
-        
+
     }
 
     public function user(){
