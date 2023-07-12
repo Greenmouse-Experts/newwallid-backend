@@ -102,7 +102,7 @@ Route::group(['middleware' => ['cors', 'json.response']], function () {
 
         });
 
-        
+
         // Individual
         Route::group(['prefix' => 'individuals', 'middleware' => CheckUserisIndividual::class], function () {
             Route::get('/', 'Individual\MainController@index');
