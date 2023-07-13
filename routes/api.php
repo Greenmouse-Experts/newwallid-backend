@@ -67,8 +67,8 @@ Route::group(['middleware' => ['cors', 'json.response']], function () {
 
 
         // IDs
-        Route::group(['prefix' => 'ids', 'namespace' => 'IDs'], function () {
-            Route::get('/', 'IDs\MainController@index');
+        Route::group(['prefix' => 'ids'], function () {
+            Route::get('/', 'MainController@index');
             Route::post('/store', 'MainController@store');
             Route::get('/created_ids', 'MainController@created_ids');
             Route::get('/created_ids/search', 'MainController@SearchCreated_ids');
@@ -81,7 +81,7 @@ Route::group(['middleware' => ['cors', 'json.response']], function () {
             Route::get('/user/business', 'MainController@getUserbusinessIdcard');
             Route::get('/user/health', 'MainController@getUserhealthIdcard');
             Route::get('/user/students', 'MainController@getUserstudentsIdcard');
-            Route::get('/organization', 'IDs\MainController@getOrgIdcard');
+            Route::get('organization', 'MainController@getOrgIdcard');
             Route::delete('/delete/{id}', 'MainController@destroy');
         });
 
@@ -114,6 +114,7 @@ Route::group(['middleware' => ['cors', 'json.response']], function () {
             Route::post('/organizations/join-request', 'Individual\MainController@send_join_request_Organization');
             Route::get('/organizations', 'Individual\MainController@joined_Organization');
             Route::get('/organizations/{query}', 'Individual\MainController@search_joined_Organization');
+            Route::get('/organizations/o/{query}', 'Individual\MainController@search_Organization');//
             Route::get('/organizations/subscriptions/plans/search', 'Individual\MainController@search_Organization_plan');
             Route::get('/organizations/subscriptions/active/all', 'Individual\MainController@allUserActiveSubscription');
             Route::get('/organizations/subscriptions/expired/all', 'Individual\MainController@allUserExpiredSubscription');
