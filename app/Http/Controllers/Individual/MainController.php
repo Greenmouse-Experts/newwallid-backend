@@ -16,6 +16,7 @@ use App\Models\Event;
 use App\Models\Member;
 use App\Models\Individual;
 use App\Models\Organization;
+use App\Http\Resources\OrganizationResource;
 use App\Http\Resources\MemberResource;
 use App\Http\Resources\MembershipRequestResource;
 use App\Http\Resources\UserResource;
@@ -284,6 +285,7 @@ class MainController extends Controller
             'role' => 'required|string'
         ]);
 
+
         $org = Organization::where('name', $request->name)->first();
 
         // check if organization with that username exists;
@@ -306,7 +308,7 @@ class MainController extends Controller
             //if its a free pass organization just register as member straight
 
             if ($org->type == 0) {
-                
+
                 // $this->sendApprovalNotification($user);
                 $member = MembershipRequest::create([
                     'role' => request()->role,
@@ -507,5 +509,12 @@ class MainController extends Controller
             ], 400);
         }
 
+    }
+
+    public function search_Organization(Request $request, $query) {
+        $orgs = Organization::where('name', 'LIKE', "%{$query}%")
+            ->paginate(20);
+
+        return $this->jsonPaginatedResponse('Search Result for Organizations', OrganizationResource::collection($orgs));
     }
 }
