@@ -517,4 +517,9 @@ class MainController extends Controller
 
         return $this->jsonPaginatedResponse('Search Result for Organizations', OrganizationResource::collection($orgs));
     }
+
+    public function listAll_Organization(Request $request) {
+        $orgs = Organization::paginate(20);
+        return $this->jsonPaginatedResponse('Registered Organizations', OrganizationResource::collection($orgs));
+    }
 }
