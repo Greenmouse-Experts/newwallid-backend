@@ -19,7 +19,10 @@ class MainController extends Controller
     public function verification_requests() {
         $individual = Individual::where('user_id', Auth::user()->id)->first();
 
-        $verification = Verification::latest()->where('individual_id', $individual->id)->paginate(10);
+        $verification = [];
+        if ($individual) {
+            $verification = Verification::latest()->where('individual_id', $individual->id)->paginate(10);
+        }
 
         return $this->jsonPaginatedResponse('Users Request', VerificationResource::collection($verification));
     }
@@ -39,9 +42,9 @@ class MainController extends Controller
             'organization_id' => ['required', 'string'],
         ]);
 
-        if($validator->fails()) {          
-            return response()->json(['error'=>$validator->errors()], 401);                        
-        }  
+        if($validator->fails()) {
+            return response()->json(['error'=>$validator->errors()], 401);
+        }
 
         $user_id = Auth::user()->id;
 
@@ -60,7 +63,7 @@ class MainController extends Controller
                 'organization_id' => $organization->id ?? null,
                 'individual_id' => $individual->id ?? null,
                 'name' => $ind_details->firstname. ' ' .$ind_details->lastname ?? $org_details->name,
-            ]);        
+            ]);
 
             return response([
                 'status' => true,
@@ -91,7 +94,7 @@ class MainController extends Controller
                     'organization_id' => $organization->id ?? null,
                     'individual_id' => $individual->id ?? null,
                     'name' => $ind_details->firstname. ' ' .$ind_details->lastname ?? $org_details->name,
-                ]);        
+                ]);
 
                 return response([
                     'status' => true,
@@ -136,9 +139,9 @@ class MainController extends Controller
         //     'status' => ['required', 'string'],
         // ]);
 
-        // if($validator->fails()) {          
-        //     return response()->json(['error'=>$validator->errors()], 401);                        
-        // } 
+        // if($validator->fails()) {
+        //     return response()->json(['error'=>$validator->errors()], 401);
+        // }
 
         $idFinder = $id;
 
@@ -164,9 +167,9 @@ class MainController extends Controller
         //     'status' => ['required', 'string'],
         // ]);
 
-        // if($validator->fails()) {          
-        //     return response()->json(['error'=>$validator->errors()], 401);                        
-        // } 
+        // if($validator->fails()) {
+        //     return response()->json(['error'=>$validator->errors()], 401);
+        // }
 
         $idFinder = $id;
 
@@ -190,9 +193,9 @@ class MainController extends Controller
             'user_id' => ['required', 'string'],
         ]);
 
-        if($validator->fails()) {          
-            return response()->json(['error'=>$validator->errors()], 401);                        
-        }  
+        if($validator->fails()) {
+            return response()->json(['error'=>$validator->errors()], 401);
+        }
 
         $user_id = Auth::user()->id;
 
@@ -213,7 +216,7 @@ class MainController extends Controller
                 'name' => $ind_details->firstname. ' ' .$ind_details->lastname ?? $org_details->name,
                 'role' => 'Verifier',
                 'status' => 'Approved'
-            ]);        
+            ]);
 
             return response([
                 'status' => true,
@@ -247,7 +250,7 @@ class MainController extends Controller
                     'name' => $ind_details->firstname. ' ' .$ind_details->lastname ?? $org_details->name,
                     'role' => 'Verifier',
                     'status' => 'Approved'
-                ]);        
+                ]);
 
                 return response([
                     'status' => true,

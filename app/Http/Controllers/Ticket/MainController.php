@@ -14,6 +14,7 @@ use App\Models\TicketCategory;
 use App\Http\Requests\TicketRequest;
 use App\Http\Requests\BuyTicketRequest;
 use App\Http\Resources\TicketResource;
+use App\Http\Resources\TicketCategoryResource;
 use App\Models\TicketPaymentTemp;
 use App\Models\User;
 use Illuminate\Support\Facades\Http;

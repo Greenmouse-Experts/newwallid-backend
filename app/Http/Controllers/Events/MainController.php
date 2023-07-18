@@ -546,20 +546,22 @@ class MainController extends Controller
 
     public function invite_multiple()
     {
-        $test = array(
-            [
-                'event_id' => 477236,
-                'username' => "daveore"
-            ],
-            [
-                'event_id' => 477236,
-                'username' => "Tech company 2"
-            ],
-            [
-                'event_id' => 477236,
-                'username' => "Tech company 3"
-            ]
-        );
+        // $test = array(
+        //     [
+        //         'event_id' => 477236,
+        //         'username' => "daveore"
+        //     ],
+        //     [
+        //         'event_id' => 477236,
+        //         'username' => "Tech company 2"
+        //     ],
+        //     [
+        //         'event_id' => 477236,
+        //         'username' => "Tech company 3"
+        //     ]
+        // );
+
+        $test = request()->invitees;
 
         foreach ($test as $item => $value) {
             $event = Event::where('unique_id', $value["event_id"])->first();

@@ -233,7 +233,7 @@ Route::group(['middleware' => ['cors', 'json.response']], function () {
             Route::get('/SearchPastEvents', 'Events\MainController@SearchPastEvents');
             Route::post('/', 'Events\MainController@store');
             Route::post('/invite', 'Events\MainController@invite');
-            Route::get('/invite_multiple', 'Events\MainController@invite_multiple');
+            Route::post('/invite_multiple', 'Events\MainController@invite_multiple');
             Route::get('/invites', 'Events\MainController@invites');
             Route::get('/SearchInvites', 'Events\MainController@SearchInvites');
             Route::get('/invites/upcoming', 'Events\MainController@upcominginvites');

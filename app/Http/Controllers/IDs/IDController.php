@@ -21,7 +21,7 @@ use Illuminate\Support\Facades\Validator;
 
 class IDController extends Controller
 {
-    public function index() 
+    public function index()
     {
         $id_card = IDCardManagement::latest()->where('user_id', Auth::user()->id)
                                              ->where('status', 'Approved')->paginate(10);
@@ -29,7 +29,7 @@ class IDController extends Controller
         return $this->jsonPaginatedResponse('User ID Card', IdManagementResource::collection($id_card));
     }
 
-    public function pending_individual() 
+    public function pending_individual()
     {
         $individual = Individual::where('user_id', Auth::user()->id)->first();
 
@@ -40,7 +40,7 @@ class IDController extends Controller
         return $this->jsonPaginatedResponse('Pending ID Individual Created Card', IdManagementResource::collection($id_card));
     }
 
-    public function pending_organization() 
+    public function pending_organization()
     {
         $individual = Individual::where('user_id', Auth::user()->id)->first();
 
@@ -51,15 +51,15 @@ class IDController extends Controller
         return $this->jsonPaginatedResponse('Pending ID Organization Created Card', IdManagementResource::collection($id_card));
     }
 
-    public function process_idCard_organization($id) 
+    public function process_idCard_organization($id)
     {
         $validator = Validator::make(request()->all(), [
             'status' => ['required', 'string'],
         ]);
 
-        if($validator->fails()) {          
-            return response()->json(['error'=>$validator->errors()], 401);                        
-        } 
+        if($validator->fails()) {
+            return response()->json(['error'=>$validator->errors()], 401);
+        }
 
         $idFinder = $id;
 
@@ -73,13 +73,13 @@ class IDController extends Controller
                 "success" => true,
                 "message" => "ID Card Declined! ",
                 "data" => $id_card,
-            ], 200); 
+            ], 200);
         } elseif(request()->status == "Approved") {
             return response()->json([
                 "success" => true,
                 "message" => "ID Card Approved Successfully! ",
                 "data" => $id_card,
-            ], 200); 
+            ], 200);
         }
     }
 
@@ -112,7 +112,7 @@ class IDController extends Controller
                 ], 400);
             } else {
                 $user_id = $user->id;
-                
+
                 if (Auth::user()->type == 'organization') {
                     $org_id = Organization::where('user_id', Auth::user()->id)->first();
                     // $idcard = IDCardManagement::where('user_id', $user_id)
@@ -254,7 +254,7 @@ class IDController extends Controller
         }
     }
 
-    function id_no($input, $strength = 5) 
+    function id_no($input, $strength = 5)
     {
         $input = '0123456789';
         $input_length = strlen($input);
@@ -263,11 +263,11 @@ class IDController extends Controller
             $random_character = $input[mt_rand(0, $input_length - 1)];
             $random_string .= $random_character;
         }
-    
+
         return $random_string;
     }
 
-    public function approved_idCard() 
+    public function approved_idCard()
     {
         $organization = Organization::where('user_id', Auth::user()->id)->first();
 
@@ -277,17 +277,23 @@ class IDController extends Controller
         return $this->jsonPaginatedResponse('Approved ID Cards', IdManagementResource::collection($id_card));
     }
 
-    public function pending_idCard() 
+    public function pending_idCard()
     {
         $organization = Organization::where('user_id', Auth::user()->id)->first();
 
-        $id_card = IDCardManagement::latest()->where('organization_id', $organization->id)
+        $id_card = [];
+
+        if($organization) {
+            $id_card = IDCardManagement::latest()->where('organization_id', $organization->id)
                                              ->where('status', 'Pending')->paginate(10);
+        }
+
+
 
         return $this->jsonPaginatedResponse('Pending ID Cards', IdManagementResource::collection($id_card));
     }
 
-    public function declined_idCard() 
+    public function declined_idCard()
     {
         $organization = Organization::where('user_id', Auth::user()->id)->first();
 
@@ -297,15 +303,15 @@ class IDController extends Controller
         return $this->jsonPaginatedResponse('Declined ID Cards', IdManagementResource::collection($id_card));
     }
 
-    public function process_idCard($id) 
+    public function process_idCard($id)
     {
         $validator = Validator::make(request()->all(), [
             'status' => ['required', 'string'],
         ]);
 
-        if($validator->fails()) {          
-            return response()->json(['error'=>$validator->errors()], 401);                        
-        } 
+        if($validator->fails()) {
+            return response()->json(['error'=>$validator->errors()], 401);
+        }
 
         $idFinder = $id;
 
@@ -319,13 +325,13 @@ class IDController extends Controller
                 "success" => true,
                 "message" => "ID Card Declined! ",
                 "data" => $id_card,
-            ], 200); 
+            ], 200);
         } elseif(request()->status == "Approved") {
             return response()->json([
                 "success" => true,
                 "message" => "ID Card Approved Successfully! ",
                 "data" => $id_card,
-            ], 200); 
+            ], 200);
         }
     }
 
@@ -336,9 +342,9 @@ class IDController extends Controller
             'passport' => 'required|mimes:jpeg,png,jpg'
         ]);
 
-        if($validator->fails()) {          
-            return response()->json(['error'=>$validator->errors()], 401);                        
-        }  
+        if($validator->fails()) {
+            return response()->json(['error'=>$validator->errors()], 401);
+        }
 
         //get username of the person the card will be created for
         $user = User::where('id', $request->user_id)->first();
@@ -364,7 +370,7 @@ class IDController extends Controller
                 ], 400);
             } else {
                 $user_id = $user->id;
-                
+
                 if (Auth::user()->type == 'organization') {
                     $org_id = Organization::where('user_id', Auth::user()->id)->first();
                     // $idcard = IDCardManagement::where('user_id', $user_id)
