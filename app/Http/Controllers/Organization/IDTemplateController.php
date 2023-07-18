@@ -17,14 +17,14 @@ use Illuminate\Support\Facades\Validator;
 class IDTemplateController extends Controller
 {
     //
-    public function index() 
+    public function index()
     {
         $id_card_template = IDTemplate::latest()->where('organization_id', Auth::user()->id)->paginate(10);
 
         return $this->jsonPaginatedResponse('Id Card Template', IdCardTemplateResource::collection($id_card_template));
     }
-    
-    public function store() 
+
+    public function store()
     {
         //Validate Request
         $validator = Validator::make(request()->all(), [
@@ -33,9 +33,9 @@ class IDTemplateController extends Controller
             'logo' => 'required|mimes:jpeg,png,jpg',
         ]);
 
-        if($validator->fails()) {          
-            return response()->json(['error'=>$validator->errors()], 401);                        
-        }  
+        if($validator->fails()) {
+            return response()->json(['error'=>$validator->errors()], 401);
+        }
 
         //Find User
         $userFinder = Auth::user()->id;
@@ -59,20 +59,20 @@ class IDTemplateController extends Controller
                 'organization_id' => $organization->id,
                 'role' => request()->role
             ]);
-    
+
             if ($id_card_template) {
                 return response()->json([
                     "success" => true,
                     "message" => "ID Card Template Created Successfully",
                     "data" => $id_card_template,
-                ], 200); 
+                ], 200);
             } else {
                 return response()->json([
                     'status' => false,
                     'message' => 'ID Card Template could not be created',
                 ], 400);
             }
-        } 
+        }
     }
 
     public function update($id) {
@@ -85,9 +85,9 @@ class IDTemplateController extends Controller
             'logo' => 'mimes:jpeg,png,jpg',
         ]);
 
-        if($validator->fails()) {          
-            return response()->json(['error'=>$validator->errors()], 401);                        
-        }  
+        if($validator->fails()) {
+            return response()->json(['error'=>$validator->errors()], 401);
+        }
 
         //Find User
         $id_card_template = IDTemplate::findorfail($idFinder);
@@ -108,13 +108,13 @@ class IDTemplateController extends Controller
                     'logo' => $logo,
                     'path' => '/storage/'.$path,
                 ]);
-        
+
                 return response()->json([
                     "success" => true,
                     "message" => "ID Card Template Updated Successfully!",
                     "data" => $idCardTemplate,
-                ], 200); 
-            } 
+                ], 200);
+            }
         } catch (Exception $e) {
             return response()->json([
                 'status' => false,

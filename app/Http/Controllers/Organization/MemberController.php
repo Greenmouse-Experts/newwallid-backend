@@ -385,8 +385,6 @@ class MemberController extends Controller
 
     public function add_approve(Request $request)
     {
-
-
         $request->validate([
             'individual_id' => 'required',
             'subscription_plan_id' => 'required'
