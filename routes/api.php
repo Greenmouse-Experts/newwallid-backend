@@ -23,7 +23,7 @@ Route::get('/', function () {
     ]);
 });
 
-Route::post('/individuals/organizations/o/all', 'Individual\MainController@listAll_Organization');
+
 
 Route::group(['middleware' => ['cors', 'json.response']], function () {
 
@@ -122,7 +122,7 @@ Route::group(['middleware' => ['cors', 'json.response']], function () {
             Route::get('/organizations', 'Individual\MainController@joined_Organization');
             Route::get('/organizations/{query}', 'Individual\MainController@search_joined_Organization');
             Route::get('/organizations/o/{query}', 'Individual\MainController@search_Organization');//
-            // Route::post('/organizations/o/all', 'Individual\MainController@listAll_Organization');//
+            Route::post('/organizations/o/all', 'Individual\MainController@listAll_Organization');//
             Route::get('/organizations/subscriptions/plans/search', 'Individual\MainController@search_Organization_plan');
             Route::get('/organizations/subscriptions/active/all', 'Individual\MainController@allUserActiveSubscription');
             Route::get('/organizations/subscriptions/expired/all', 'Individual\MainController@allUserExpiredSubscription');
