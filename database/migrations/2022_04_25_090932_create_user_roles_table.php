@@ -13,12 +13,12 @@ class CreateUserRolesTable extends Migration
      */
     public function up()
     {
-        Schema::create('user_roles', function (Blueprint $table) {
-            $table->id();
-            $table->unsignedBigInteger('organization_id')->nullable();
-            $table->string('role')->nullable();
-            $table->timestamps();
-        });
+        // Schema::create('user_roles', function (Blueprint $table) {
+        //     $table->id();
+        //     $table->unsignedBigInteger('organization_id')->nullable();
+        //     $table->string('role')->nullable();
+        //     $table->timestamps();
+        // });
     }
 
     /**

@@ -13,14 +13,14 @@ class CreateSubscriptionPlansTable extends Migration
      */
     public function up()
     {
-        Schema::create('subscription_plans', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
-            $table->double('price');
-            $table->text('description');
-            $table->bigInteger('organization_id');
-            $table->timestamps();
-        });
+        // Schema::create('subscription_plans', function (Blueprint $table) {
+        //     $table->id();
+        //     $table->string('name');
+        //     $table->double('price');
+        //     $table->text('description');
+        //     $table->bigInteger('organization_id');
+        //     $table->timestamps();
+        // });
     }
 
     /**

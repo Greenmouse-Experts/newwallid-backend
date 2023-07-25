@@ -13,22 +13,22 @@ class CreateIDCardManagementTable extends Migration
      */
     public function up()
     {
-        Schema::create('i_d_card_management', function (Blueprint $table) {
-            $table->id();
-            $table->string('id_card_number');
-            $table->unsignedBigInteger('user_id');
-            $table->unsignedBigInteger('organization_id')->nullable();
-            $table->unsignedBigInteger('individual_id')->nullable();
-            $table->unsignedBigInteger('template_id')->nullable();
-            $table->string('name');
-            $table->string('passport');
-            $table->string('path');
-            $table->string('role')->nullable();
-            $table->string('issued_date');
-            $table->enum('status', ['Pending', 'Declined', 'Approved'])->default('Pending');
-            $table->string('created_by');
-            $table->timestamps();
-        });
+        // Schema::create('i_d_card_management', function (Blueprint $table) {
+        //     $table->id();
+        //     $table->string('id_card_number');
+        //     $table->unsignedBigInteger('user_id');
+        //     $table->unsignedBigInteger('organization_id')->nullable();
+        //     $table->unsignedBigInteger('individual_id')->nullable();
+        //     $table->unsignedBigInteger('template_id')->nullable();
+        //     $table->string('name');
+        //     $table->string('passport');
+        //     $table->string('path');
+        //     $table->string('role')->nullable();
+        //     $table->string('issued_date');
+        //     $table->enum('status', ['Pending', 'Declined', 'Approved'])->default('Pending');
+        //     $table->string('created_by');
+        //     $table->timestamps();
+        // });
     }
 
     /**

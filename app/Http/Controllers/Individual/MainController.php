@@ -158,6 +158,62 @@ class MainController extends Controller
     {
     }
 
+
+    public function updatev2(Request $request) {
+        $this->validate($request, [
+            'firstname' => 'required',
+            'lastname' => 'required',
+            'dob' => 'required',
+        ]);
+
+        $individual = Individual::where('user_id', Auth::user()->id)->first();
+
+        if ($individual) {
+
+            $individual->firstname = $request->firstname;
+            $individual->lastname = $request->lastname;
+            $individual->dob = $request->dob;
+
+            if($request->image != $individual->image) {
+
+                $base64Image = $request->image;
+
+                // Generate a unique filename for the image
+                $filename = Str::random(20) . '.png';
+
+                // Decode the base64 string to binary data
+                $imageData = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $base64Image));
+
+                // Generate a unique file name for the image
+                $filename = 'image_' . time() . '.png';
+
+                // Specify the path where you want to save the image in the public directory
+                $path = public_path('profile_picture/individual/' . $filename);
+
+                // Save the image data to the specified path
+                file_put_contents($path, $imageData);
+
+                $individual->image = $filename;
+            }
+
+            if(isset($request->bio)) {
+                $individual->bio = $request->bio;
+            }
+
+            $individual->save();
+
+            return response([
+                'status' => true,
+                'message' => 'Profile updated successfully',
+            ]);
+        }
+
+        return response([
+            'status' => false,
+            'message' => 'Profile could not be updated',
+        ], 400);
+    }
+
     /**
      * Update the specified resource in storage.
      *

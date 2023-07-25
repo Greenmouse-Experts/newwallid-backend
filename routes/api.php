@@ -4,6 +4,7 @@ use App\Http\Middleware\CheckUserisIndividual;
 use App\Http\Middleware\CheckUserisOrganization;
 use Illuminate\Support\Facades\Route;
 
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -22,7 +23,6 @@ Route::get('/', function () {
     ]);
 });
 
-
 Route::group(['middleware' => ['cors', 'json.response']], function () {
 
 
@@ -30,8 +30,12 @@ Route::group(['middleware' => ['cors', 'json.response']], function () {
     Route::prefix('auth')->group(function () {
         Route::post('login', 'Auth\LoginController@index');
         Route::post('register', 'Auth\RegisterController@store');
+        Route::post('confirm-email/{email}', 'Auth\RegisterController@confirm_email');
+        Route::post('register/v2', 'Auth\RegisterController@storev2');
         Route::post('organization/register', 'Auth\RegisterController@storeOrganization');
+        Route::post('organization/register/v2', 'Auth\RegisterController@storeOrganizationv2');
         Route::post('resend/emailverification/{email}', 'Auth\RegisterController@resend');
+        Route::post('resend/emailverification/v2/{email}', 'Auth\RegisterController@resendv2');
         Route::post('password/email', 'Auth\RegisterController@forget_password');
         Route::post('password/reset', 'Auth\RegisterController@reset_password');
         Route::post('forgot_password', 'Auth\NewPasswordController@forgotPassword');
@@ -109,6 +113,7 @@ Route::group(['middleware' => ['cors', 'json.response']], function () {
             Route::get('/getUser', 'Individual\MainController@getUser');
             Route::get('/mobileStats', 'Individual\MainController@mobileStats');
             Route::patch('/', 'Individual\MainController@update');
+            Route::patch('/v2', 'Individual\MainController@updatev2');
             Route::get('/all', 'Individual\MainController@allIndividuals');
             Route::get('/organizations/join-requests', 'Individual\MainController@organizations_join_request');
             Route::post('/organizations/join-request', 'Individual\MainController@send_join_request_Organization');
@@ -131,6 +136,8 @@ Route::group(['middleware' => ['cors', 'json.response']], function () {
 
             Route::get('/', 'Organization\MainController@index');
             Route::patch('/', 'Organization\MainController@update');
+            Route::patch('/v2', 'Organization\MainController@updatev2');
+
             Route::patch('/change_password', 'Organization\MainController@updatePassword');
             Route::get('/getUser', 'Organization\MainController@getUser');
             Route::get('/mobileStats', 'Organization\MainController@mobileStats');
