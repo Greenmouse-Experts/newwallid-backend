@@ -27,6 +27,7 @@ class OrganizationResource extends \App\Http\Resources\BaseCustomResource
             'updated_at' => $this->updated_at,
             'image' => $this->image,
             'user' => $this->whenLoaded('user', new SimpleUserResource($this->user)),
+            'members' => \App\Models\Organization::member_size($this->id)
         ];
     }
 }

@@ -23,6 +23,8 @@ Route::get('/', function () {
     ]);
 });
 
+
+
 Route::group(['middleware' => ['cors', 'json.response']], function () {
 
 
