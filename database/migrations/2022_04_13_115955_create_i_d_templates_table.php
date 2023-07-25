@@ -13,16 +13,16 @@ class CreateIDTemplatesTable extends Migration
      */
     public function up()
     {
-        Schema::create('i_d_templates', function (Blueprint $table) {
-            $table->id();
-            $table->unsignedBigInteger('organization_id');
-            $table->string('background_color');
-            $table->string('text_color');
-            $table->string('role')->nullable();
-            $table->string('logo');
-            $table->string('path');
-            $table->timestamps();
-        });
+        // Schema::create('i_d_templates', function (Blueprint $table) {
+        //     $table->id();
+        //     $table->unsignedBigInteger('organization_id');
+        //     $table->string('background_color');
+        //     $table->string('text_color');
+        //     $table->string('role')->nullable();
+        //     $table->string('logo');
+        //     $table->string('path');
+        //     $table->timestamps();
+        // });
     }
 
     /**

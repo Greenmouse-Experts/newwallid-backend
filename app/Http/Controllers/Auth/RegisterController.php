@@ -21,6 +21,7 @@ use App\Handlers\EmailHandler;
 use App\Http\Resources\UserResource;
 use App\Handlers\NotificationHandler;
 use App\Notifications\EmailVerificationNotification;
+use App\Notifications\EmailVerificationOnApiNotification;
 
 use Mail;
 use App\Mail\SendCodeResetPassword;
@@ -90,6 +91,7 @@ class RegisterController extends Controller
             'username' => $data['username'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
+            'token' => $data['token']
         ]);
     }
 
@@ -150,6 +152,49 @@ class RegisterController extends Controller
 
             try {
                 $user->notify(new EmailVerificationNotification($user));
+            } catch(\Exception $e) {}
+
+
+            $response = [
+                'status' => true,
+                'message' =>  'Account created Successfully, Please verify your account and Login',
+                'data' => [
+                    'user' => new UserResource($user)
+                ]
+            ];
+
+            return response($response);
+        } catch (\Exception $e) {
+
+            if (isset($user))
+                $user->delete();
+
+            throw $e;
+        }
+    }
+
+    public function storev2(RegisterRequest $request)
+    {
+        try {
+
+            $input = $request->validated();
+            $token = rand(1000000, 9999999);
+
+            $input['token'] = $token;
+            $user = $this->create($input);
+
+            $individual = Individual::create([
+                'firstname' => $input['firstname'],
+                'lastname' => $input['lastname'],
+                'phone' => $input['phone'],
+                'id_card_number' => $this->wallID(10),
+                'user_id' => $user->id,
+            ]);
+
+            $this->assignRoles($user, 'individual');
+
+            try {
+                $user->notify(new EmailVerificationOnApiNotification($user, $token));
             } catch(\Exception $e) {}
 
 
@@ -244,6 +289,58 @@ class RegisterController extends Controller
         }
     }
 
+    public function storeOrganizationv2(RegisterOrgRequest $request)
+    {
+
+        try {
+
+            $request->validated();
+            $token = rand(1000000, 9999999);
+
+            $user = User::create([
+                'type' => 'organization',
+                'email' => $request->email,
+                'username' => $request->name,
+                'password' => Hash::make($request->password),
+                'token' => $token
+            ]);
+
+            $org = Organization::create([
+                'name' => $request->input('company'),
+                'user_id' => $user->id,
+                'phone' => $request->phone,
+                'id_card_number' => $this->wallID(10),
+                'type' => $request->type // 0 => Free , 0 => Closed
+            ]);
+
+            $this->assignRoles($user, 'organization');
+            // $user->notify(new EmailVerificationNotification($user));
+            try {
+                $user->notify(new EmailVerificationOnApiNotification($user, $user->token));
+            } catch(\Exception $e) {}
+
+            $response = [
+                'status' => true,
+                'message' =>  'Account created Successfully',
+                'data' => [
+                    'user' => new UserResource($user)
+                ]
+            ];
+
+
+            return response($response);
+        } catch (\Exception $e) {
+
+            if (isset($user))
+                $user->delete();
+
+            if (isset($org))
+                $org->delete();
+
+            throw $e;
+        }
+    }
+
     public function createOrganization(Request $request)
     {
         $validated = $request->validate([
@@ -287,6 +384,28 @@ class RegisterController extends Controller
         return view('auth.organization');
     }
 
+    public function confirm_email($email, Request $request) {
+        $token = $request->token;
+
+        $user = User::where('email', $email)->first();
+
+        if(!$user) {
+            return response(['status' => false, 'message' => "Invalid user"]);
+        }
+
+        if($user->verified_at) {
+            return response(['status' => false, 'message' => "User already confirmed."]);
+        }
+
+        if($user->token != $token) {
+            return response(['status' => false, 'message' => "Invalid token."]);
+        }
+
+        User::where(['id' => $user->id])
+            ->update(['token' => null, 'email_verified_at' => now()]);
+
+        return response(['status' => true, 'message' => "Email confirmed successufully."]);
+    }
 
     public function verifyEmail(Request $request)
     {
@@ -319,6 +438,31 @@ class RegisterController extends Controller
             ], 400);
         }
         $user->notify(new EmailVerificationNotification($user));
+
+        $response = [
+            'status' => true,
+            'message' =>  'A fresh verification link has been sent to your email address.',
+            'data' => null
+        ];
+
+        return response($response);
+    }
+
+
+    public function resendv2($email)
+    {
+        $user = User::where('email', $email)->first();
+                    // ->where('status', '<>', 'active')->first();
+
+        if ($user->verified_at) {
+            return response([
+                'message' => 'Invalid user specified.'
+            ], 400);
+        }
+        // $user->notify(new EmailVerificationNotification($user));
+        try {
+            $user->notify(new EmailVerificationOnApiNotification($user, $user->token));
+        } catch(\Exception $e) {}
 
         $response = [
             'status' => true,

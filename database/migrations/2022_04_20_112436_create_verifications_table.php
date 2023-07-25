@@ -13,16 +13,16 @@ class CreateVerificationsTable extends Migration
      */
     public function up()
     {
-        Schema::create('verifications', function (Blueprint $table) {
-            $table->id();
-            $table->unsignedBigInteger('user_id');
-            $table->unsignedBigInteger('organization_id')->nullable();
-            $table->unsignedBigInteger('individual_id')->nullable();
-            $table->string('name')->nullable();
-            $table->string('role')->nullable();
-            $table->enum('status', ['Pending', 'Declined', 'Approved'])->default('Pending');
-            $table->timestamps();
-        });
+        // Schema::create('verifications', function (Blueprint $table) {
+        //     $table->id();
+        //     $table->unsignedBigInteger('user_id');
+        //     $table->unsignedBigInteger('organization_id')->nullable();
+        //     $table->unsignedBigInteger('individual_id')->nullable();
+        //     $table->string('name')->nullable();
+        //     $table->string('role')->nullable();
+        //     $table->enum('status', ['Pending', 'Declined', 'Approved'])->default('Pending');
+        //     $table->timestamps();
+        // });
     }
 
     /**

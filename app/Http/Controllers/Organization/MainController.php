@@ -195,6 +195,65 @@ class MainController extends Controller
 
     }
 
+    public function updatev2(UpdateOrganizationRequest $request)
+    {
+        $request->validated();
+
+        $organization = Organization::where('user_id', Auth::user()->id)->first();
+
+        if ($organization) {
+
+            $organization->name = $request->name;
+            $organization->address = $request->address;
+            $organization->image = $image_name ?? $request->image;
+
+            if ($request->image != $organization->image) {
+
+                $base64Image = $request->image;
+
+                // Generate a unique filename for the image
+                $filename = Str::random(20) . '.png';
+
+                // Decode the base64 string to binary data
+                $imageData = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $base64Image));
+
+                // Generate a unique file name for the image
+                $filename = 'image_' . time() . '.png';
+
+                // Specify the path where you want to save the image in the public directory
+                $path = public_path('profile_picture/organization/' . $filename);
+
+                // Save the image data to the specified path
+                file_put_contents($path, $imageData);
+
+                $organization->image = $filename;
+
+
+                // $image_name = time() . "." . explode('/', explode(':', substr($request->image, 0, strpos($request->image, ';')))[1])[1];
+                // Image::make($request->image)->save(public_path('profile_picture/organization/') . $image_name);
+                // if ($organization->image) {
+                //     $old_file = public_path() . '/profile_picture/organization/' . $organization->image;
+                //     if (file_exists($old_file)) {
+                //         unlink($old_file);
+                //     }
+                // }
+            };
+
+            $organization->save();
+
+            return response([
+                'status' => true,
+                'message' => 'Profile updated successfully',
+            ]);
+        };
+
+        return response([
+            'status' => false,
+            'message' => 'Profile could not be updated',
+        ], 400);
+
+    }
+
 
     public function updatePassword(UpdateUserPasswordRequest $request)
     {
