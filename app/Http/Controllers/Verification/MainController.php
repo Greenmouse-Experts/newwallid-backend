@@ -147,10 +147,21 @@ class MainController extends Controller
 
         $verification = Verification::where('id', $idFinder)->first();
 
-        $verification->update([
-            'status' => 'Approved',
-            'role' => 'Verifier'
-        ]);
+        if(!$verification) {
+            return response()->json([
+                "success" => false,
+                "message" => "Verification record not found!",
+            ], 200);
+        }
+
+        if($verification) {
+            Verification::where('id', $idFinder)->update([
+                'status' => 'Approved',
+                'role' => 'Verifier'
+            ]);
+        }
+
+
         // $verification->status = 'Approved';
         // $verification->role = 'Verifier';
         // $verification->save();

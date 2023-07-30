@@ -16,4 +16,9 @@ class SubscriptionPlan extends Model
         return $this->belongsTo('App\Models\Organization');
     }
 
+    // public static function subscribers()
+    // {
+    //     return $this->hasMany('App\Models\')
+    // }
+
 }
