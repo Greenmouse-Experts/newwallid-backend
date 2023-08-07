@@ -103,27 +103,27 @@ class MainController extends Controller
 
             if ($request->image) {
 
-                $image_name = time() . "." . explode('/', explode(':', substr($request->image, 0, strpos($request->image, ';')))[1])[1];
-                Image::make($request->image)->save(public_path('events/') . $image_name);
+                // $image_name = time() . "." . explode('/', explode(':', substr($request->image, 0, strpos($request->image, ';')))[1])[1];
+                // Image::make($request->image)->save(public_path('events/') . $image_name);
 
             //
-            //                $image_name = time() . '.' . $request->image->getClientOriginalExtension();
-            //
-            //
-            //                $request->image->move(public_path('events/'), $image_name);
+                            $image_name = time() . '.' . $request->image->getClientOriginalExtension();
+            
+            
+                            $request->image->move(public_path('events/'), $image_name);
 
 
             }
 
             if ($request->venue_image) {
 
-                $venue_image_name = time() . "." . explode('/', explode(':', substr($request->venue_image, 0, strpos($request->venue_image, ';')))[1])[1];
-                Image::make($request->venue_image)->save(public_path('venue_image/') . $venue_image_name);
+                // $venue_image_name = time() . "." . explode('/', explode(':', substr($request->venue_image, 0, strpos($request->venue_image, ';')))[1])[1];
+                // Image::make($request->venue_image)->save(public_path('venue_image/') . $venue_image_name);
 
-                //                $venue_image_name = time() . '.' . $request->venue_image->getClientOriginalExtension();
-                //
-                //
-                //                $request->venue_image->move(public_path('venue_image/'), $venue_image_name);
+                                $venue_image_name = time() . '.' . $request->venue_image->getClientOriginalExtension();
+                
+                
+                                $request->venue_image->move(public_path('venue_image/'), $venue_image_name);
                 //
             }
 
